@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+      }
+
+      canvas{
+      	border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" width="627" height="627"></canvas>
+
+    <input type="file" id="imgSource"/>
+
+    <script>
+    	const canvas = document.getElementById("canvas");
+		const ctx = canvas.getContext("2d");
+
+		let imgSource = document.getElementById("imgSource");
+		imgSource.addEventListener('change', handleImage, false);
+		var reader = new FileReader();
+		
+		function handleImage(e){
+		    var reader = new FileReader();
+		    reader.onload = function(event){
+		        var img = new Image();
+		        img.onload = function(){
+		           
+		            processImage(img);
+		        }
+		        img.src = event.target.result;
+		    }
+		    reader.readAsDataURL(e.target.files[0]);     
+		}
+
+		function processImage(imgObj) {
+			ctx.fillStyle = "white";
+			ctx.fillRect(0,0,canvas.width,canvas.height);
+			ctx.drawImage(imgObj,0,0);
+
+			let imgData = ctx.getImageData(0,0,imgObj.width,imgObj.height);
+			
+
+			let cores = [];
+			let whiteAmount = 0;
+			for(let i = 0; i < imgData.data.length; i+=4) {
+				var red = imgData.data[i];
+				var green = imgData.data[i+1];
+				var blue = imgData.data[i+2];
+				var alpha = imgData.data[i+3];
+				if (red === 255 && green === 255 && blue ===  255){
+					whiteAmount++;
+				} else {
+					if(cores["r"+red+"g"+green+"b"+blue+"a"+alpha] == null) {
+						cores["r"+red+"g"+green+"b"+blue+"a"+alpha] = {
+							red: red,
+							green: green,
+							blue: blue,
+							alpha: alpha,
+							count: 1
+						}; 
+					} else {
+						cores["r"+red+"g"+green+"b"+blue+"a"+alpha].count++; 
+					}
+				}
+				
+			}
+ 			let barMaxSize = canvas.height;
+ 			let nextY=0;
+ 			let i=1;
+ 			let numberOfColors =  imgData.data.length/4;
+
+ 			console.log(cores);
+			for(key in cores) {
+				//console.log(cores[key])
+				let tempHeight = cores[key].count * barMaxSize / (numberOfColors-whiteAmount);
+				ctx.fillStyle = "rgba("+cores[key].red+","+cores[key].green+","+cores[key].blue+","+cores[key].alpha+")";
+				//console.log(tempHeight)
+				ctx.fillRect(canvas.width-100,nextY,100,tempHeight);
+				
+				nextY = tempHeight*i;
+				i++;
+				
+			}
+			
+		}
+    </script>
+  </body>
+</html> 
