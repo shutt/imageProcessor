@@ -5,21 +5,24 @@
       body {
         margin: 0px;
         padding: 0px;
+        overflow: hidden;
       }
 
       canvas{
-      	border: 1px solid black;
+      	border-bottom: 1px solid black;
       }
     </style>
   </head>
   <body>
-    <canvas id="canvas" width="627" height="627"></canvas>
+    <canvas id="canvas" width="900"></canvas>
 
     <input type="file" id="imgSource"/>
 
     <script>
     	const canvas = document.getElementById("canvas");
 		const ctx = canvas.getContext("2d");
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight-50;
 
 		let imgSource = document.getElementById("imgSource");
 		imgSource.addEventListener('change', handleImage, false);
@@ -72,19 +75,22 @@
 			}
  			let barMaxSize = canvas.height;
  			let nextY=0;
- 			let i=1;
  			let numberOfColors =  imgData.data.length/4;
+
+ 			ctx.font = "10px Helvetica";
 
  			console.log(cores);
 			for(key in cores) {
-				//console.log(cores[key])
-				let tempHeight = cores[key].count * barMaxSize / (numberOfColors-whiteAmount);
-				ctx.fillStyle = "rgba("+cores[key].red+","+cores[key].green+","+cores[key].blue+","+cores[key].alpha+")";
-				//console.log(tempHeight)
-				ctx.fillRect(canvas.width-100,nextY,100,tempHeight);
-				
-				nextY = tempHeight*i;
-				i++;
+				if(cores[key].count>1) {
+
+					let tempHeight = cores[key].count * barMaxSize / (numberOfColors-whiteAmount);
+					ctx.fillStyle = "rgba("+cores[key].red+","+cores[key].green+","+cores[key].blue+","+cores[key].alpha+")";
+					ctx.fillRect(canvas.width-100,nextY,100,tempHeight);
+					ctx.fillStyle = "black";
+					ctx.fillText((tempHeight/barMaxSize * 100).toFixed(1) + "%", canvas.width - 130, nextY + 14);
+
+					nextY += tempHeight;				
+				}
 				
 			}
 			
