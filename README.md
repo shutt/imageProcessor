@@ -1,3 +1,5 @@
 # imageProcessor
 
-simple image color %;
+Image color weight
+
+https://shutt.github.io/imageProcessor/
