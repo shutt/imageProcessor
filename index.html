@@ -1,11 +1,18 @@
 <!DOCTYPE HTML>
 <html>
   <head>
+  	<title>Image decoder by Ricardo Magalhães</title>
     <style>
       body {
         margin: 0px;
         padding: 0px;
         overflow: hidden;
+        background-color: #1E1E20;
+      }
+
+      * {
+      	color: #eee;
+      	font-family: "Courier New", Courier, monospace;
       }
 
       canvas{
@@ -14,10 +21,11 @@
     </style>
   </head>
   <body>
+
     <canvas id="canvas" width="900"></canvas>
 
     <input type="file" id="imgSource"/>
-
+    <p style="float:right; margin: 0; margin-right:10px;">Image color weight by Ricardo Magalhães </p>
     <script>
     	const canvas = document.getElementById("canvas");
 		const ctx = canvas.getContext("2d");
